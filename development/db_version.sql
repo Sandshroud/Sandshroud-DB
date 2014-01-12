@@ -40,7 +40,7 @@ CREATE TABLE `db_version` (
 
 LOCK TABLES `db_version` WRITE;
 /*!40000 ALTER TABLE `db_version` DISABLE KEYS */;
-INSERT INTO `db_version` VALUES ('SADB',1,1,'3.3.5a','none','none','armm77');
+INSERT INTO `db_version` VALUES ('SADB',1,2,'3.3.5a','none','none','armm77');
 /*!40000 ALTER TABLE `db_version` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-11-23 20:17:33
+-- Dump completed on 2014-01-11 22:41:51
