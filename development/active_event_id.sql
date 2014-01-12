@@ -35,7 +35,7 @@ CREATE TABLE `active_event_id` (
 
 LOCK TABLES `active_event_id` WRITE;
 /*!40000 ALTER TABLE `active_event_id` DISABLE KEYS */;
-INSERT INTO `active_event_id` VALUES (14,'Night Elf Mohawk');
+INSERT INTO `active_event_id` VALUES (7,'Winter Veil'),(14,'Night Elf Mohawk');
 /*!40000 ALTER TABLE `active_event_id` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-11-23 20:17:32
+-- Dump completed on 2014-01-11 22:41:49
