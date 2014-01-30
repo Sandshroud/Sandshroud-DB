@@ -88,7 +88,11 @@ GOTO error
 CLS
 ECHO [Importing] Started...
 ECHO [Importing] SADB database...
-%mysqlpath%\mysql -h %server% --user=%user% --password=%pass% --port=%port% %world% < %world_path%\world.sql
+for %%C in (%world_path%\*.sql) do (
+	ECHO [Importing] %%~nxC
+	%mysqlpath%\mysql -h %server% --user=%user% --password=%pass% --port=%port% %world% < "%%~fC"
+	IF ERRORLEVEL 1 GOTO errorOccurance
+)
 IF NOT ERRORLEVEL 1 ECHO [Importing] Database import was successful
 ECHO.
 PAUSE
