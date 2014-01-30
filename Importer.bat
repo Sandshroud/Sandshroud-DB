@@ -33,6 +33,7 @@ SET mysqlpath=Mysql
 SET changesets=Changesets
 SET backup=Backups
 SET world_path=database
+SET dev_path=development
 SET custom=extras\custom\
 REM ===========================================================================
 ECHO.
@@ -54,6 +55,7 @@ ECHO.
 ECHO		==============================
 ECHO		  I = Import SADB database
 ECHO		  C = Import changesets
+ECHO		  D = Import development changes
 ECHO		  X = Exit
 ECHO		==============================
 ECHO		 BW = Backup World database
@@ -62,7 +64,7 @@ ECHO.
 SET /p Letter= Enter Letter:
 
 
-IF %Letter%==* GOTO error
+IF %Letter%==* GOTO errorOccurance
 
 REM World Import
 IF %Letter%==i GOTO world_import
@@ -76,13 +78,17 @@ REM changesets
 IF %Letter%==c GOTO changeset_import
 IF %Letter%==C GOTO changeset_import
 
+REM changesets
+IF %Letter%==d GOTO development_import
+IF %Letter%==D GOTO development_import
+
 REM world db backup
 IF %Letter%==BW GOTO backup_world
 IF %Letter%==bW GOTO backup_world
 IF %Letter%==bw GOTO backup_world
 IF %Letter%==Bw GOTO backup_world
 
-GOTO error
+GOTO errorOccurance
 
 :world_import
 CLS
@@ -113,6 +119,19 @@ ECHO.
 %mysqlpath%\mysql -h %server% --user=%user% --password=%pass% --port=%port% %world% < %changesets%\changeset_%ch%.sql
 ECHO.
 IF NOT ERRORLEVEL 1 ECHO File changeset_%ch%.sql import completed
+ECHO.
+PAUSE
+GOTO menu
+
+:development_import
+CLS
+ECHO Importing development changes now...
+for %%C in (%dev_path%\*.sql) do (
+	ECHO [Importing] %%~nxC
+	%mysqlpath%\mysql -h %server% --user=%user% --password=%pass% --port=%port% %world% < "%%~fC"
+	IF ERRORLEVEL 1 GOTO errorOccurance
+)
+IF NOT ERRORLEVEL 1 ECHO Development changes imported successfully
 ECHO.
 PAUSE
 GOTO menu
