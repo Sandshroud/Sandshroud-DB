@@ -35,6 +35,11 @@ SET backup=Backups
 SET world_path=database
 SET custom=extras\custom\
 REM ===========================================================================
+ECHO.
+ECHO [Importer] Testing connection to database...
+%mysqlpath%\mysql -h %server% --user=%user% --password=%pass% --port=%port% %world% < %mysqlpath%\test.sql
+IF ERRORLEVEL 1 GOTO errorConnection
+
 
 :menu
 cls
@@ -84,8 +89,7 @@ CLS
 ECHO [Importing] Started...
 ECHO [Importing] SADB database...
 %mysqlpath%\mysql -h %server% --user=%user% --password=%pass% --port=%port% %world% < %world_path%\world.sql
-ECHO [Importing] Database import was successful
-GOTO window_quit
+IF NOT ERRORLEVEL 1 ECHO [Importing] Database import was successful
 ECHO.
 PAUSE
 GOTO menu
@@ -100,11 +104,11 @@ set /p ch=      Number:
 ECHO.
 IF %ch%==a GOTO all_changesets
 ECHO      Importing...
-IF NOT EXIST "%changesets%\changeset_%ch%.sql" GOTO error2
+IF NOT EXIST "%changesets%\changeset_%ch%.sql" GOTO errorNoChanges
 ECHO.
 %mysqlpath%\mysql -h %server% --user=%user% --password=%pass% --port=%port% %world% < %changesets%\changeset_%ch%.sql
 ECHO.
-ECHO      File changeset_%ch%.sql import completed
+IF NOT ERRORLEVEL 1 ECHO File changeset_%ch%.sql import completed
 ECHO.
 PAUSE
 GOTO menu
@@ -116,8 +120,10 @@ ECHO [Importing] Changesets
 for %%C in (%changesets%\*.sql) do (
 	ECHO [Importing] %%~nxC
 	%mysqlpath%\mysql -h %server% --user=%user% --password=%pass% --port=%port% %world% < "%%~fC"
+	IF ERRORLEVEL 1 GOTO changeset_failed
 )
-ECHO Changesets import completed!
+ECHO.
+IF NOT ERRORLEVEL 1 ECHO Changesets import completed!
 ECHO.
 PAUSE   
 GOTO menu
@@ -133,7 +139,21 @@ ECHO.
 PAUSE
 GOTO menu
 
-:error
+:changeset_failed
+ECHO Changesets import failed!
+ECHO.
+PAUSE
+GOTO menu
+
+:errorConnection
+CLS
+ECHO.
+ECHO.
+ECHO [ERROR] You entered wrong mysql server informaton, try again
+PAUSE
+GOTO USER_CONFIG
+
+:errorOccurance
 CLS
 ECHO.
 ECHO.
@@ -142,12 +162,13 @@ ECHO [ERROR] main menu.
 PAUSE
 GOTO menu
 
-:error2
+:errorNoChanges
 CLS
 ECHO.
 ECHO.
-ECHO [ERROR] You entered wrong mysql server informaton, try again
+ECHO [ERROR] No changesets exist to apply
 PAUSE
-GOTO window_quit
+GOTO menu
 
 :window_quit
+exit
